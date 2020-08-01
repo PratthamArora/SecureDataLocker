@@ -1,7 +1,11 @@
 package com.pratthamarora.jetpacksecurity.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -28,6 +32,21 @@ class HomeFragment : Fragment() {
     private var fileListEntity = ArrayList<FileEntity>()
     private val viewModel by viewModels<HomeViewModel>()
     private lateinit var fileListAdapter: FileListAdapter
+    private lateinit var promptInfo: BiometricPrompt.PromptInfo
+    private lateinit var biometricPrompt: BiometricPrompt
+    private val biometricCallback = object : BiometricPrompt.AuthenticationCallback() {
+        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+            super.onAuthenticationError(errorCode, errString)
+            Log.d("HomeFragment", "onAuthenticationError: $errorCode")
+
+        }
+
+        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+            super.onAuthenticationSucceeded(result)
+            Log.d("HomeFragment", "onAuthenticationSucceeded: $result ")
+            dialogUpdateMasterKey()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,9 +59,23 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupBiometric()
         observeViewModel()
         viewModel.getFileList()
         viewModel.getMasterToken()
+    }
+
+    private fun setupBiometric() {
+        promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle("Unlock")
+            .setDescription("Scan Fingerprint")
+            .setDeviceCredentialAllowed(true)
+            .build()
+        biometricPrompt = BiometricPrompt(
+            this,
+            ContextCompat.getMainExecutor(requireContext()),
+            biometricCallback
+        )
     }
 
     private fun observeViewModel() {
@@ -170,7 +203,17 @@ class HomeFragment : Fragment() {
                 if (viewModel.masterToken.value.isNullOrEmpty()) {
                     dialogSetMasterKey()
                 } else {
-                    dialogUpdateMasterKey()
+                    when (BiometricManager.from(requireContext()).canAuthenticate()) {
+                        BiometricManager.BIOMETRIC_SUCCESS -> {
+                            biometricPrompt.authenticate(promptInfo)
+                        }
+                        BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE,
+                        BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED,
+                        BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
+                            dialogUpdateMasterKey()
+
+                        }
+                    }
                 }
                 true
             }

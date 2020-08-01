@@ -14,10 +14,6 @@ import kotlinx.android.synthetic.main.fragment_file.*
 
 class FileFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = FileFragment()
-    }
-
     private val viewModel by viewModels<FileViewModel>()
 
     override fun onCreateView(
@@ -33,7 +29,6 @@ class FileFragment : Fragment() {
         fab_save_msg.setOnClickListener {
             if (!TextUtils.isEmpty(txtBody.text)) {
                 viewModel.content.value = txtBody.text.toString()
-                viewModel.storeFile()
                 viewModel.storeEncryptedFile()
             } else {
                 displaySnackBar("Message cannot be empty!", requireView())
