@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.google.android.material.snackbar.Snackbar
 import com.pratthamarora.jetpacksecurity.R
+import com.pratthamarora.jetpacksecurity.util.Utility.displaySnackBar
 import kotlinx.android.synthetic.main.fragment_shared_pref.*
 
 class SharedPrefFragment : Fragment() {
@@ -39,8 +39,7 @@ class SharedPrefFragment : Fragment() {
                 viewModel.userEmail.value = txtEmail.text.toString()
                 viewModel.saveUserData()
             } else {
-                Snackbar.make(requireView(), "Please fill all the fields!", Snackbar.LENGTH_LONG)
-                    .show()
+                displaySnackBar("Please fill all the fields!", requireView())
             }
 
         }
@@ -56,7 +55,7 @@ class SharedPrefFragment : Fragment() {
         })
 
         viewModel.snackBarMsg.observe(viewLifecycleOwner, Observer {
-            Snackbar.make(requireView(), it, Snackbar.LENGTH_LONG).show()
+            displaySnackBar(it, requireView())
         })
 
     }
