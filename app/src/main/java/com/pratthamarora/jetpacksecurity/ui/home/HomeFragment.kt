@@ -24,6 +24,7 @@ import java.util.*
 
 class HomeFragment : Fragment() {
 
+    private var pos: Int = 0
     private var fileListEntity = ArrayList<FileEntity>()
     private val viewModel by viewModels<HomeViewModel>()
     private lateinit var fileListAdapter: FileListAdapter
@@ -67,9 +68,15 @@ class HomeFragment : Fragment() {
 
     private fun setupRecyclerView() {
         fileListAdapter = FileListAdapter(fileListEntity) {
+            pos = it
             val fileEntity = fileListEntity[it]
             viewModel.fileName.value = fileEntity.fileName
-            showAlertDialog(fileEntity.file)
+            viewModel.getMasterToken()
+            if (viewModel.masterToken.value.isNullOrEmpty()) {
+                showAlertDialog(fileEntity.file)
+            } else {
+                dialogAuth()
+            }
         }
         filesRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -125,6 +132,24 @@ class HomeFragment : Fragment() {
                 viewModel.newMasterToken.value = newKey
                 viewModel.updateMasterToken()
                 dismiss()
+            }
+            negativeButton(R.string.dialog_close) {
+                it.dismiss()
+            }
+        }
+    }
+
+    private fun dialogAuth() {
+        MaterialDialog(requireContext()).show {
+            val view = customView(R.layout.auth_dialog)
+            positiveButton(R.string.dialog_ok) {
+                val key = view.txtApiKey.text.toString()
+                if (key == viewModel.masterToken.value) {
+                    showAlertDialog(fileListEntity[pos].file)
+                } else {
+                    viewModel.snackBarMsg.value = "Keys don't match!"
+                    it.dismiss()
+                }
             }
             negativeButton(R.string.dialog_close) {
                 it.dismiss()
