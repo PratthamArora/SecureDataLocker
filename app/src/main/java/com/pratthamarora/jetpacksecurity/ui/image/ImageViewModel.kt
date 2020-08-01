@@ -15,8 +15,8 @@ import java.util.*
 
 class ImageViewModel(application: Application) : AndroidViewModel(application) {
     val snackBarMsg: MutableLiveData<String> = MutableLiveData()
-    private val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
     private val context = application
+    private val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
     private val dir = File(context.filesDir, "images")
     val bitmap: MutableLiveData<Bitmap> = MutableLiveData()
 
