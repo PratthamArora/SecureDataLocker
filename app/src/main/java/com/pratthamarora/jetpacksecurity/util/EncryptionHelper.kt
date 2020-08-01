@@ -2,8 +2,10 @@ package com.pratthamarora.jetpacksecurity.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.security.crypto.EncryptedFile
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import java.io.File
 
 object EncryptionHelper {
     private const val prefName = "com.pratthamarora.jetpacksecurity.prefs"
@@ -20,5 +22,15 @@ object EncryptionHelper {
             keyEncryptedScheme,
             valueEncryptedScheme
         )
+    }
+
+    fun getEncryptedFile(file: File, context: Context): EncryptedFile {
+        val fileEncryptionScheme = EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB
+        return EncryptedFile.Builder(
+            file,
+            context,
+            masterKey,
+            fileEncryptionScheme
+        ).build()
     }
 }

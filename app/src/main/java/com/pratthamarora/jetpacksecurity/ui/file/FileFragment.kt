@@ -34,6 +34,7 @@ class FileFragment : Fragment() {
             if (!TextUtils.isEmpty(txtBody.text)) {
                 viewModel.content.value = txtBody.text.toString()
                 viewModel.storeFile()
+                viewModel.storeEncryptedFile()
             } else {
                 displaySnackBar("Message cannot be empty!", requireView())
             }
