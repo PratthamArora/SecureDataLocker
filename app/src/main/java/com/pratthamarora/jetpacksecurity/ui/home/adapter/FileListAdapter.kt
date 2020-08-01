@@ -9,10 +9,12 @@ import com.pratthamarora.jetpacksecurity.data.FileEntity
 import kotlinx.android.synthetic.main.secure_file_list_view.view.*
 
 class FileListAdapter(
-    private val fileList: ArrayList<FileEntity>
+    private val fileList: ArrayList<FileEntity>,
+    private val listener: (Int) -> Unit
 ) : RecyclerView.Adapter<FileListAdapter.FileListViewHolder>() {
 
-    class FileListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class FileListViewHolder(view: View, private val listener: (Int) -> Unit) :
+        RecyclerView.ViewHolder(view) {
         lateinit var data: FileEntity
 
         fun onBind(file: FileEntity) {
@@ -22,6 +24,9 @@ class FileListAdapter(
                 txtFileName.text = data.fileName
                 txtFile.text = data.file.toString()
                 txtFileSize.text = data.fileSize
+                setOnClickListener {
+                    listener(adapterPosition)
+                }
             }
         }
     }
@@ -30,6 +35,7 @@ class FileListAdapter(
         return FileListViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.secure_file_list_view, parent, false)
+            , listener
         )
     }
 

@@ -9,13 +9,17 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
 import com.pratthamarora.jetpacksecurity.R
 import com.pratthamarora.jetpacksecurity.data.FileEntity
 import com.pratthamarora.jetpacksecurity.ui.home.adapter.FileListAdapter
 import com.pratthamarora.jetpacksecurity.util.Utility
+import kotlinx.android.synthetic.main.detail_dialog.view.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import java.io.File
 import java.util.*
 
 class HomeFragment : Fragment() {
@@ -60,10 +64,33 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        fileListAdapter = FileListAdapter(fileListEntity)
+        fileListAdapter = FileListAdapter(fileListEntity) {
+            val fileEntity = fileListEntity[it]
+            viewModel.fileName.value = fileEntity.fileName
+            showAlertDialog(fileEntity.file)
+        }
         filesRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = fileListAdapter
         }
+    }
+
+    private fun showAlertDialog(file: File) {
+
+        val dialog = MaterialDialog(requireContext())
+            .customView(R.layout.detail_dialog)
+            .cornerRadius(8f)
+        val view = dialog.getCustomView()
+        if (file.extension == "jpg") {
+            view.dialog_imageView.isVisible = true
+            viewModel.bmp.observe(viewLifecycleOwner, Observer {
+                view.dialog_imageView.setImageBitmap(it)
+            })
+            viewModel.getEncryptedBitmap()
+        } else {
+            view.dialog_textView.isVisible = true
+        }
+        dialog.show()
+
     }
 }
