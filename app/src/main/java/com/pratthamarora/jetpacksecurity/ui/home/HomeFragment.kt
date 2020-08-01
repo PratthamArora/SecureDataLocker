@@ -89,6 +89,10 @@ class HomeFragment : Fragment() {
             viewModel.getEncryptedBitmap()
         } else {
             view.dialog_textView.isVisible = true
+            viewModel.message.observe(viewLifecycleOwner, Observer {
+                view.dialog_textView.text = it
+            })
+            viewModel.getEncryptedFile()
         }
         dialog.show()
 

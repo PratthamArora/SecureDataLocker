@@ -23,6 +23,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val message: MutableLiveData<String> = MutableLiveData()
     val fileName: MutableLiveData<String> = MutableLiveData()
     private val dirImage = File(context.filesDir, "images")
+    private val dirFile = File(context.filesDir, "documents")
 
 
     fun getEncryptedBitmap() {
@@ -42,6 +43,24 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
+    fun getEncryptedFile() {
+        viewModelScope.launch {
+            val file = File(dirFile, fileName.value!!)
+            val encryptedFile = EncryptionHelper.getEncryptedFile(file, context)
+            launch(IO) {
+                try {
+                    encryptedFile.openFileInput().also {
+                        message.postValue(String(it.readBytes(), Charsets.UTF_8))
+                    }
+                    snackBarMsg.postValue("File decrypted successfully!")
+                } catch (e: Exception) {
+                    snackBarMsg.postValue(e.message)
+                }
+            }
+        }
+    }
+
 
     fun getFileList() {
         isLoading.value = true
