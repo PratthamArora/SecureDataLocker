@@ -6,7 +6,9 @@ import android.graphics.BitmapFactory
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.pratthamarora.jetpacksecurity.data.AppPreference
 import com.pratthamarora.jetpacksecurity.data.FileEntity
+import com.pratthamarora.jetpacksecurity.data.UserRepository
 import com.pratthamarora.jetpacksecurity.util.EncryptionHelper
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -24,6 +26,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val fileName: MutableLiveData<String> = MutableLiveData()
     private val dirImage = File(context.filesDir, "images")
     private val dirFile = File(context.filesDir, "documents")
+    val masterToken: MutableLiveData<String> = MutableLiveData()
+    val newMasterToken: MutableLiveData<String> = MutableLiveData()
+    private var sharedPrefs = EncryptionHelper.getSharedPrefs(application)
+    private var appPreference = AppPreference(sharedPrefs)
+    private var userRepository = UserRepository(appPreference)
 
 
     fun getEncryptedBitmap() {
@@ -83,6 +90,26 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             }
             isLoading.postValue(false)
         }
+    }
+
+    fun getMasterToken() {
+        masterToken.value = userRepository.getMasterKey()
+    }
+
+    fun setMasterToken() {
+        userRepository.setMasterKey(masterToken.value!!)
+        snackBarMsg.value = "Master Key has been set!"
+    }
+
+    fun updateMasterToken() {
+        if (masterToken.value != userRepository.getMasterKey()) {
+            snackBarMsg.value = "Master Key did not match"
+        } else {
+            userRepository.setMasterKey(newMasterToken.value!!)
+            snackBarMsg.value = "Master Key updated successfully"
+
+        }
+
     }
 
 

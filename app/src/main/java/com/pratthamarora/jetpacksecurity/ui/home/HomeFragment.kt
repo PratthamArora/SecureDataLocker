@@ -1,9 +1,7 @@
 package com.pratthamarora.jetpacksecurity.ui.home
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -19,6 +17,8 @@ import com.pratthamarora.jetpacksecurity.ui.home.adapter.FileListAdapter
 import com.pratthamarora.jetpacksecurity.util.Utility
 import kotlinx.android.synthetic.main.detail_dialog.view.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.key_edit_dialog.*
+import kotlinx.android.synthetic.main.key_setup_dialog.*
 import java.io.File
 import java.util.*
 
@@ -33,6 +33,7 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
@@ -40,6 +41,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
         viewModel.getFileList()
+        viewModel.getMasterToken()
     }
 
     private fun observeViewModel() {
@@ -95,6 +97,60 @@ class HomeFragment : Fragment() {
             viewModel.getEncryptedFile()
         }
         dialog.show()
+
+    }
+
+    private fun dialogSetMasterKey() {
+        MaterialDialog(requireContext()).show {
+            val view = customView(R.layout.key_setup_dialog)
+            positiveButton(R.string.dialog_ok) {
+                val key = view.txtApiKey.text.toString()
+                viewModel.masterToken.value = key
+                viewModel.setMasterToken()
+                dismiss()
+            }
+            negativeButton(R.string.dialog_close) {
+                it.dismiss()
+            }
+        }
+    }
+
+    private fun dialogUpdateMasterKey() {
+        MaterialDialog(requireContext()).show {
+            val view = customView(R.layout.key_edit_dialog)
+            positiveButton(R.string.dialog_ok) {
+                val oldKey = view.txtOldApiKey.text.toString()
+                val newKey = view.txtNewApiKey.text.toString()
+                viewModel.masterToken.value = oldKey
+                viewModel.newMasterToken.value = newKey
+                viewModel.updateMasterToken()
+                dismiss()
+            }
+            negativeButton(R.string.dialog_close) {
+                it.dismiss()
+            }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.main_menu, menu)
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.navigation_master_key -> {
+                viewModel.getMasterToken()
+                if (viewModel.masterToken.value.isNullOrEmpty()) {
+                    dialogSetMasterKey()
+                } else {
+                    dialogUpdateMasterKey()
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
 
     }
 }
