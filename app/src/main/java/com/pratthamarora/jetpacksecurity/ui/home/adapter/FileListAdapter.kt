@@ -15,15 +15,13 @@ class FileListAdapter(
 
     class FileListViewHolder(view: View, private val listener: (Int) -> Unit) :
         RecyclerView.ViewHolder(view) {
-        lateinit var data: FileEntity
 
         fun onBind(file: FileEntity) {
-            data = file
 
             itemView.apply {
-                txtFileName.text = data.fileName
-                txtFile.text = data.file.toString()
-                txtFileSize.text = data.fileSize
+                txtFileName.text = file.fileName
+                txtFile.text = file.file.toString()
+                txtFileSize.text = file.fileSize
                 setOnClickListener {
                     listener(adapterPosition)
                 }

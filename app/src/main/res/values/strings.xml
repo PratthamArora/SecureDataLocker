@@ -1,9 +1,8 @@
 <resources>
-    <string name="app_name">JetpackSecurity</string>
+    <string name="app_name">SecureDataLocker</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-
     <string name="dialog_ok">OK</string>
     <string name="dialog_close">Close</string>
     <string name="file_encryption">File Encryption</string>
