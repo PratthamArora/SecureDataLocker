@@ -24,7 +24,7 @@
         tools:layout="@layout/fragment_shared_pref" />
     <fragment
         android:id="@+id/navigation_file"
-        android:name="com.example.securelocker.ui.file.FileFragment"
+        android:name="com.pratthamarora.jetpacksecurity.ui.file.FileFragment"
         android:label="@string/file_encryption"
         tools:layout="@layout/fragment_file" />
 </navigation>
