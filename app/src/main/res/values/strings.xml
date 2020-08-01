@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">JetpackSecurity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_close">Close</string>
+    <string name="file_encryption">File Encryption</string>
+    <string name="master_key">Master Key</string>
+    <string name="pref_encryption">Pref Encryption</string>
+    <string name="image_encryption">Image Encryption</string>
 </resources>

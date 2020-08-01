@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.pratthamarora.jetpacksecurity.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_image"
+        android:name="com.pratthamarora.jetpacksecurity.ui.image.ImageFragment"
+        android:label="@string/image_encryption"
+        tools:layout="@layout/fragment_image" />
+
+    <fragment
+        android:id="@+id/navigation_sharedPref"
+        android:name="com.pratthamarora.jetpacksecurity.ui.sharedpref.SharedPrefFragment"
+        android:label="@string/pref_encryption"
+        tools:layout="@layout/fragment_shared_pref" />
+    <fragment
+        android:id="@+id/navigation_file"
+        android:name="com.example.securelocker.ui.file.FileFragment"
+        android:label="@string/file_encryption"
+        tools:layout="@layout/fragment_file" />
+</navigation>
